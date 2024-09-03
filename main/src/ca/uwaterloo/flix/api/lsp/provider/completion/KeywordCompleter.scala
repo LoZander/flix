@@ -71,16 +71,16 @@ object KeywordCompleter {
   def getDeclKeywords(context: CompletionContext)(implicit flix: Flix, index: Index, root: TypedAst.Root): Iterable[Completion] =
     List(
       ("def"      , Priority.highest),   
-      ("pub"      , Priority.higher),
-      ("enum"     , Priority.high),
+      ("pub"      , Priority.highest),
+      ("instance" , Priority.higher),
+      ("import"   , Priority.high),
       ("type"     , Priority.high),
-      ("instance" , Priority.high),
-      ("mod"      , Priority.low),
+      ("mod"      , Priority.high),
+      ("trait"    , Priority.low),
+      ("enum"     , Priority.low),
       ("eff"      , Priority.lower),
-      ("struct"   , Priority.lower),
+      ("struct"   , Priority.lowest),
       ("sealed"   , Priority.lowest),
-      ("trait"    , Priority.lowest),
-      ("import"   , Priority.lowest),
     ) map toCompletion
 
   /**
