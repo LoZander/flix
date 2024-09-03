@@ -60,8 +60,8 @@ object KeywordCompleter {
     */
   def getTraitKeywords(context: CompletionContext)(implicit flix: Flix, index: Index, root: TypedAst.Root): Iterable[Completion] =
     List(
-      ("def", Priority.lower),
-      ("pub", Priority.lower),
+      ("def", Priority.highest),
+      ("pub", Priority.highest),
     ) map toCompletion
 
 
