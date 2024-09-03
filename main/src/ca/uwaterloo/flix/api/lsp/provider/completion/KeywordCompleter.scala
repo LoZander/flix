@@ -41,17 +41,17 @@ object KeywordCompleter {
   def getOtherKeywords(context: CompletionContext)(implicit flix: Flix, index: Index, root: TypedAst.Root): Iterable[Completion] =
     List(
       ("with", Priority.highest),
+      ("@Test", Priority.highest),
       ("law", Priority.higher),
-      ("@Test", Priority.high),
-      ("where", Priority.low),
-      ("fix", Priority.low),
+      ("redef", Priority.high),
+      ("where", Priority.high),
+      ("fix", Priority.high),
+      ("@Parallel", Priority.low),
+      ("@Lazy", Priority.low),
+      ("@ParallelWhenPure", Priority.lower),
+      ("@LazyWhenPure", Priority.lower),
       ("@Deprecated", Priority.lowest),
-      ("@Parallel", Priority.lowest),
-      ("@ParallelWhenPure", Priority.lowest),
-      ("@Lazy", Priority.lowest),
-      ("@LazyWhenPure", Priority.lowest),
       ("Record", Priority.lowest),
-      ("redef", Priority.lowest),
       ("Schema", Priority.lowest),
     ) map toCompletion
 
