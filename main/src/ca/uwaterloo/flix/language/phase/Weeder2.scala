@@ -781,8 +781,12 @@ object Weeder2 {
           val maybeType = tryPick(TreeKind.Type.Type, tree)
           // Check for missing or illegal type ascription
           (maybeType, presence) match {
-            case (None, Presence.Required) => Validation.toHardFailure(MissingFormalParamAscription(ident.name, tree.loc))
-            case (Some(_), Presence.Forbidden) => Validation.toHardFailure(IllegalFormalParamAscription(tree.loc))
+            case (None, Presence.Required) =>
+              val e = MissingFormalParamAscription(ident.name, tree.loc)
+              Validation.toSoftFailure(FormalParam(ident, mods, Some(Type.Error(tree.loc.asSynthetic)), tree.loc), e)
+            case (Some(_), Presence.Forbidden) =>
+              val e = IllegalFormalParamAscription(tree.loc)
+              Validation.toSoftFailure(FormalParam(ident, mods, None, tree.loc), e)
             case (Some(typeTree), _) => mapN(Types.visitType(typeTree)) { tpe => FormalParam(ident, mods, Some(tpe), tree.loc) }
             case (None, _) => Validation.success(FormalParam(ident, mods, None, tree.loc))
           }
@@ -3182,11 +3186,11 @@ object Weeder2 {
   /**
     * Picks out the first sub-tree of a specific [[TreeKind]].
     */
-  private def pick(kind: TreeKind, tree: Tree): Validation[Tree, CompilationMessage] = {
+  private def pick(kind: TreeKind, tree: Tree, sctx: SyntacticContext = SyntacticContext.Unknown): Validation[Tree, CompilationMessage] = {
     tryPick(kind, tree) match {
       case Some(t) => Validation.success(t)
       case None =>
-        val error = NeedAtleastOne(NamedTokenSet.FromTreeKinds(Set(kind)), SyntacticContext.Unknown, loc = tree.loc)
+        val error = NeedAtleastOne(NamedTokenSet.FromTreeKinds(Set(kind)), sctx, loc = tree.loc)
         Validation.HardFailure(Chain(error))
     }
   }
